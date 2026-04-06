@@ -29,27 +29,6 @@
 		7D8644012F728F17003B5595 /* Zest ZooUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Zest ZooUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
-/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		7D1309B62F844E1600272690 /* Exceptions for "Views" folder in "Zest Zoo" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Onboarding/CoachRevealView.swift,
-				Onboarding/QuizView.swift,
-			);
-			target = 7D8643E72F728F16003B5595 /* Zest Zoo */;
-		};
-/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
-
-/* Begin PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-		7D1309B72F844E1E00272690 /* Exceptions for "Views" folder in "Copy Bundle Resources" phase from "Zest Zoo" target */ = {
-			isa = PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet;
-			buildPhase = 7D8643E62F728F16003B5595 /* Resources */;
-			membershipExceptions = (
-				Onboarding/QuizView.swift,
-			);
-		};
-/* End PBXFileSystemSynchronizedGroupBuildPhaseMembershipExceptionSet section */
-
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		7D13096A2F8447B400272690 /* App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
@@ -68,10 +47,6 @@
 		};
 		7D13096D2F844AA000272690 /* Views */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				7D1309B62F844E1600272690 /* Exceptions for "Views" folder in "Zest Zoo" target */,
-				7D1309B72F844E1E00272690 /* Exceptions for "Views" folder in "Copy Bundle Resources" phase from "Zest Zoo" target */,
-			);
 			path = Views;
 			sourceTree = "<group>";
 		};
@@ -83,6 +58,11 @@
 		7D13096F2F844AC400272690 /* Resources */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		7D1309FE2F84621E00272690 /* Extensions */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		7D8643FA2F728F17003B5595 /* Zest ZooTests */ = {
@@ -125,6 +105,7 @@
 		7D8643DF2F728F16003B5595 = {
 			isa = PBXGroup;
 			children = (
+				7D1309FE2F84621E00272690 /* Extensions */,
 				7D13096F2F844AC400272690 /* Resources */,
 				7D13096E2F844AB700272690 /* Services */,
 				7D13096D2F844AA000272690 /* Views */,
@@ -169,6 +150,7 @@
 				7D13096D2F844AA000272690 /* Views */,
 				7D13096E2F844AB700272690 /* Services */,
 				7D13096F2F844AC400272690 /* Resources */,
+				7D1309FE2F84621E00272690 /* Extensions */,
 			);
 			name = "Zest Zoo";
 			packageProductDependencies = (

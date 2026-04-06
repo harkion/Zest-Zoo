@@ -27,6 +27,6 @@ struct RootView: View {
                 MainTabView()
             }
         }
-        .animation(.easeInOut(duration: 0.4), value: appState.appPhase)
+        .animation(.easeInOut, value: appState.appPhase)
     }
 }
