@@ -12,40 +12,50 @@ struct MainTabView: View {
 
     var body: some View {
         TabView(selection: $selectedTab) {
-            HomeView()
-                .tabItem {
-                    Image(systemName: selectedTab == 0 ? "house.fill" : "house")
-                    Text("Home")
-                }
-                .tag(0)
+            NavigationStack {
+                HomeView()
+            }
+            .tabItem {
+                Image(systemName: selectedTab == 0 ? "house.fill" : "house")
+                Text("Home")
+            }
+            .tag(0)
 
-            FriendsView()
-                .tabItem {
-                    Image(systemName: selectedTab == 1 ? "person.2.fill" : "person.2")
-                    Text("Friends")
-                }
-                .tag(1)
+            NavigationStack {
+                FriendsView()
+            }
+            .tabItem {
+                Image(systemName: selectedTab == 1 ? "person.2.fill" : "person.2")
+                Text("Friends")
+            }
+            .tag(1)
 
-            ShopView()
-                .tabItem {
-                    Image(systemName: selectedTab == 2 ? "bag.fill" : "bag")
-                    Text("Shop")
-                }
-                .tag(2)
+            NavigationStack {
+                ShopView()
+            }
+            .tabItem {
+                Image(systemName: selectedTab == 2 ? "bag.fill" : "bag")
+                Text("Shop")
+            }
+            .tag(2)
 
-            ProfileView()
-                .tabItem {
-                    Image(systemName: selectedTab == 3 ? "person.fill" : "person")
-                    Text("Profile")
-                }
-                .tag(3)
+            NavigationStack {
+                ProfileView()
+            }
+            .tabItem {
+                Image(systemName: selectedTab == 3 ? "person.fill" : "person")
+                Text("Profile")
+            }
+            .tag(3)
 
-            SettingsView()
-                .tabItem {
-                    Image(systemName: "gearshape.fill")
-                    Text("Settings")
-                }
-                .tag(4)
+            NavigationStack {
+                SettingsView()
+            }
+            .tabItem {
+                Image(systemName: "gearshape.fill")
+                Text("Settings")
+            }
+            .tag(4)
         }
         .tint(.blue)
     }

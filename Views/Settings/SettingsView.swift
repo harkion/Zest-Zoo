@@ -5,15 +5,8 @@
 //  Created by Fahri Can on 06/04/2026.
 //
 
+// SettingsView.swift — should look like this now:
 import SwiftUI
-
-// MARK: - Stubs (replace one by one as we build each screen)
-
-struct HomeView: View {
-    var body: some View {
-        Text("Home").font(.largeTitle)
-    }
-}
 
 struct FriendsView: View {
     var body: some View {
@@ -38,3 +31,4 @@ struct SettingsView: View {
         Text("Settings").font(.largeTitle)
     }
 }
+// HomeView stub is GONE — it now lives in HomeView.swift
