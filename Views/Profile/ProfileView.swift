@@ -15,27 +15,25 @@ struct ProfileView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                // Profile header
+
+                // MARK: - Profile header
                 VStack(spacing: 16) {
-                    ZStack {
-                        CoachAvatarView(coach: user?.assignedCoach ?? .koala, size: 90)
-                    }
+                    CoachAvatarView(coach: user?.assignedCoach ?? .koala, size: 90)
 
                     VStack(spacing: 4) {
-                        Text(user?.name.isEmpty == false ? user!.name : " Zoo User")
+                        Text(user?.name.isEmpty == false ? user!.name : "Zoo User")
                             .font(.system(size: 22, weight: .black, design: .rounded))
                             .foregroundColor(.black)
                         Text("Member since \(joinDateText)")
                             .font(.system(size: 13, weight: .regular, design: .rounded))
                             .foregroundColor(.gray)
                     }
-                        
                 }
                 .padding(.vertical, 24)
                 .frame(maxWidth: .infinity)
                 .background(Color.white)
 
-                // Stats grid
+                // MARK: - Stats grid
                 LazyVGrid(columns: [
                     GridItem(.flexible()),
                     GridItem(.flexible()),
@@ -63,12 +61,13 @@ struct ProfileView: View {
                 .padding(.horizontal, 20)
                 .padding(.top, 20)
 
-                // Currency balance
+                // MARK: - Currency balance
                 HStack(spacing: 12) {
                     Image(user?.assignedCoach.currencyImageName ?? "leaf_icon")
                         .resizable()
                         .scaledToFit()
                         .frame(width: 36, height: 36)
+
                     VStack(alignment: .leading, spacing: 2) {
                         Text("\(user?.currencyBalance ?? 0) \(user?.assignedCoach.currencyName ?? "Leafs")")
                             .font(.system(size: 18, weight: .black, design: .rounded))
@@ -86,10 +85,22 @@ struct ProfileView: View {
                 .padding(.horizontal, 20)
                 .padding(.top, 16)
 
-                // Achievements preview
+                // MARK: - Achievements preview
                 VStack(alignment: .leading, spacing: 12) {
-                    Text("Achievements")
-                        .font(.system(size: 18, weight: .bold, design: .rounded))
+                    NavigationLink(destination: AchievementsView()) {
+                        HStack {
+                            Text("Achievements")
+                                .font(.system(size: 18, weight: .bold, design: .rounded))
+                                .foregroundColor(.black)
+                            Spacer()
+                            Text("See all")
+                                .font(.system(size: 14, weight: .medium, design: .rounded))
+                                .foregroundColor(.blue)
+                            Image(systemName: "chevron.right")
+                                .font(.system(size: 13))
+                                .foregroundColor(.blue)
+                        }
+                    }
 
                     HStack(spacing: 12) {
                         AchievementBadge(
@@ -128,6 +139,7 @@ struct ProfileView: View {
         .navigationBarTitleDisplayMode(.large)
     }
 
+    // MARK: - Helpers
     var joinDateText: String {
         let formatter = DateFormatter()
         formatter.dateFormat = "MMM yyyy"
@@ -135,6 +147,7 @@ struct ProfileView: View {
     }
 }
 
+// MARK: - Profile Stat Cell
 struct ProfileStatCell: View {
     let value: String
     let label: String
@@ -162,6 +175,7 @@ struct ProfileStatCell: View {
     }
 }
 
+// MARK: - Achievement Badge
 struct AchievementBadge: View {
     let systemIcon: String
     let name: String
