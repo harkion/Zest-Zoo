@@ -79,6 +79,23 @@ class HomeViewModel {
         )
         context.insert(record)
         try? context.save()
+        
+        checkCoachProgression(context: context)
+    }
+
+    var pendingTransition: CoachTransition? = nil
+
+    private func checkCoachProgression(context: ModelContext) {
+        let transition = CoachProgressService.shared.evaluateCoachChange(for: user)
+        if let transition {
+            pendingTransition = transition
+        }
+    }
+
+    func applyPendingTransition(context: ModelContext) {
+        guard let transition = pendingTransition else { return }
+        CoachProgressService.shared.applyTransition(transition, to: user, context: context)
+        pendingTransition = nil
     }
 
     private func updateStreak() {

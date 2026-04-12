@@ -15,6 +15,7 @@ struct HomeView: View {
     @State private var showActivity = false
     @State private var selectedActivity: Activity?
     @State private var showCompletion = false
+    @State private var showCoachTransition = false
     @State private var lastCompletedActivity: Activity?
 
     var body: some View {
@@ -65,6 +66,10 @@ struct HomeView: View {
                             currencyEarned: 15
                         ) {
                             showCompletion = false
+                            
+                            if vm.pendingTransition != nil {
+                                    showCoachTransition = true
+                                }
                         }
                     }
                 }
@@ -157,12 +162,35 @@ struct HomeView: View {
                 value: "\(vm.user.currentStreak)",
                 label: "day streak"
             )
-            StatCard(
-                icon: "trophy.fill",
-                iconColor: vm.user.assignedCoach.primaryColor,
-                value: "\(vm.user.currencyBalance)",
-                label: vm.user.assignedCoach.currencyName.lowercased()
+            CurrencyStatCard(
+                coach: vm.user.assignedCoach,
+                value: "\(vm.user.currencyBalance)"
             )
+        }
+    }
+    
+    struct CurrencyStatCard: View {
+        let coach: Coach
+        let value: String
+
+        var body: some View {
+            HStack(spacing: 12) {
+                CurrencyIconView(coach: coach, size: 28)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(value)
+                        .font(.system(size: 22, weight: .black, design: .rounded))
+                        .foregroundColor(.black)
+                    Text(coach.currencyName.lowercased())
+                        .font(.system(size: 12, weight: .medium, design: .rounded))
+                        .foregroundColor(.gray)
+                }
+                Spacer()
+            }
+            .padding(16)
+            .background(Color.white)
+            .clipShape(RoundedRectangle(cornerRadius: 16))
+            .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
+            .frame(maxWidth: .infinity)
         }
     }
 
@@ -172,11 +200,7 @@ struct HomeView: View {
         VStack(spacing: 16) {
             // Avatar circle
             ZStack {
-                Circle()
-                    .fill(vm.user.assignedCoach.primaryColor)
-                    .frame(width: 100, height: 100)
-                Text(vm.user.assignedCoach.emoji)
-                    .font(.system(size: 56))
+                CoachAvatarView(coach: vm.user.assignedCoach, size: 110)
             }
 
             VStack(spacing: 6) {

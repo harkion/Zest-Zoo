@@ -23,8 +23,10 @@ struct SplashView: View {
 
                 // Animals appear with fade in first
                 HStack(spacing: 20) {
-                    Text("🐨")
-                        .font(.system(size: 52))
+                    Image("koa_icon")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 64, height: 64)
                         .offset(y: bounceKoala ? -14 : 0)
                         .animation(
                             .easeInOut(duration: 0.7)
@@ -33,8 +35,10 @@ struct SplashView: View {
                             value: bounceKoala
                         )
 
-                    Text("🐼")
-                        .font(.system(size: 64))
+                    Image("bo_icon")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 64, height: 64)
                         .offset(y: bouncePanda ? -14 : 0)
                         .animation(
                             .easeInOut(duration: 0.7)
@@ -43,8 +47,10 @@ struct SplashView: View {
                             value: bouncePanda
                         )
 
-                    Text("🐿️")
-                        .font(.system(size: 52))
+                    Image("zip_icon")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 64, height: 64)
                         .offset(y: bounceSquirrel ? -14 : 0)
                         .animation(
                             .easeInOut(duration: 0.7)

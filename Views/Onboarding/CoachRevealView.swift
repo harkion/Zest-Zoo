@@ -34,10 +34,14 @@ struct CoachRevealView: View {
                         .frame(width: showCircle ? 160 : 0, height: showCircle ? 160 : 0)
                         .animation(.spring(duration: 0.6).delay(0.2), value: showCircle)
 
-                    Text(coach.emoji)
-                        .font(.system(size: showEmoji ? 80 : 20))
+                    Image(coach.imageName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(
+                            width: showEmoji ? 100 : 20,
+                            height: showEmoji ? 100 : 20
+                        )
                         .scaleEffect(emojiScale)
-                        .animation(.spring(response: 0.5, dampingFraction: 0.6).delay(0.5), value: showEmoji)
                 }
                 .padding(.bottom, 40)
 

@@ -109,8 +109,22 @@ struct QuizView: View {
                         let user = viewModel.createUser(context: context)
                         appState.currentUser = user
                         appState.hasCompletedOnboarding = true
+                        // Request notification permission and schedule nudges
+                        Task {
+                            let granted = await NotificationService.shared.requestPermission()
+                            if granted {
+                                NotificationService.shared.scheduleDailyNudges(
+                                    for: viewModel.assignedCoach(),
+                                    times: NudgeTime.defaults
+                                )
+                                NotificationService.shared.scheduleWeeklySummary(
+                                    for: viewModel.assignedCoach()
+                                )
+                            }
+                        }
                         navigateToReveal = true
-                    } label: {
+                    }
+                    label: {
                         Text("Meet My Coach →")
                             .font(.system(size: 18, weight: .bold, design: .rounded))
                             .foregroundColor(.white)
