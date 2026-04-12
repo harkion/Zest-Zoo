@@ -24,6 +24,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		7D7A571E2F8BFD1B009176B2 /* Zest-Zoo-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "Zest-Zoo-Info.plist"; sourceTree = "<group>"; };
 		7D8643E82F728F16003B5595 /* Zest Zoo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Zest Zoo.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D8643F72F728F17003B5595 /* Zest ZooTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Zest ZooTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7D8644012F728F17003B5595 /* Zest ZooUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Zest ZooUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -105,6 +106,7 @@
 		7D8643DF2F728F16003B5595 = {
 			isa = PBXGroup;
 			children = (
+				7D7A571E2F8BFD1B009176B2 /* Zest-Zoo-Info.plist */,
 				7D1309FE2F84621E00272690 /* Extensions */,
 				7D13096F2F844AC400272690 /* Resources */,
 				7D13096E2F844AB700272690 /* Services */,
@@ -444,6 +446,7 @@
 				DEVELOPMENT_TEAM = 7KL6QT32VM;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Zest-Zoo-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -476,6 +479,7 @@
 				DEVELOPMENT_TEAM = 7KL6QT32VM;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "Zest-Zoo-Info.plist";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
