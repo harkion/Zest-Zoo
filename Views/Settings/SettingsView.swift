@@ -51,7 +51,7 @@ struct SettingsView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 16))
                 .shadow(color: .black.opacity(0.04), radius: 6)
                 .padding(.horizontal, 20)
-                .padding(.top, 8)
+                .padding(.top, 16)
 
                 // Notifications section
                 SettingsSection(title: "Notifications") {
@@ -91,32 +91,43 @@ struct SettingsView: View {
 
                 // About section
                 SettingsSection(title: "About") {
-                    SettingsLinkRow(
-                        icon: "info.circle.fill",
-                        iconColor: .blue,
-                        title: "About Zest Zoo"
-                    )
+                    NavigationLink(destination: AboutView()) {
+                        SettingsLinkRow(
+                            icon: "info.circle.fill",
+                            iconColor: .blue,
+                            title: "About Zest Zoo"
+                        )
+                    }
+                    .buttonStyle(.plain)
+
                     Divider().padding(.leading, 56)
-                    SettingsLinkRow(
-                        icon: "questionmark.circle.fill",
-                        iconColor: .green,
-                        title: "Help Center"
-                    )
+
+                    NavigationLink(destination: HelpCenterView()) {
+                        SettingsLinkRow(
+                            icon: "questionmark.circle.fill",
+                            iconColor: .green,
+                            title: "Help Center"
+                        )
+                    }
+                    .buttonStyle(.plain)
+
                     Divider().padding(.leading, 56)
+
                     SettingsLinkRow(
                         icon: "lock.shield.fill",
                         iconColor: .gray,
                         title: "Privacy Policy"
                     )
+
                     Divider().padding(.leading, 56)
+
                     SettingsLinkRow(
                         icon: "doc.text.fill",
                         iconColor: .gray,
                         title: "Terms of Service"
                     )
                 }
-                .padding(.horizontal, 20)
-
+                
                 // Danger zone
                 SettingsSection(title: "Account") {
                     Button {
@@ -199,6 +210,7 @@ struct SettingsSection<Content: View>: View {
     }
 }
 
+// MARK: - Settings Toggle Row
 struct SettingsToggleRow: View {
     let icon: String
     let iconColor: Color
@@ -233,6 +245,7 @@ struct SettingsToggleRow: View {
     }
 }
 
+// MARK: - Settings Link Row
 struct SettingsLinkRow: View {
     let icon: String
     let iconColor: Color
