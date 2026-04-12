@@ -28,8 +28,25 @@ enum Coach: String, Codable, CaseIterable, Hashable {
         }
     }
 
-    // Use string literals instead of emoji literals
-    // to avoid SwiftData encoding issues
+    // Asset image names
+    var imageName: String {
+        switch self {
+        case .koala:    return "koa_icon"
+        case .panda:    return "bo_icon"
+        case .squirrel: return "zip_icon"
+        }
+    }
+
+    // Currency icon asset names
+    var currencyImageName: String {
+        switch self {
+        case .koala:    return "leaf_icon"
+        case .panda:    return "bamboo_icon"
+        case .squirrel: return "acorn_icon"
+        }
+    }
+
+    // Emojis as fallback for notifications only
     var emoji: String {
         switch self {
         case .koala:    return "🐨"
@@ -62,6 +79,7 @@ enum Coach: String, Codable, CaseIterable, Hashable {
         }
     }
 
+    // Emojis as fallback for notifications only
     var currencyEmoji: String {
         switch self {
         case .koala:    return "🍃"
@@ -80,13 +98,13 @@ enum Coach: String, Codable, CaseIterable, Hashable {
             ]
         case .panda:
             return [
-                "Bamboo break time! Let's do 2 minutes of standing twists 🎋",
+                "Bamboo break time! Let's do 2 minutes of standing twists",
                 "You've been at it for a while. Take 4 minutes. Your future self is rooting for you.",
                 "Quick panda check-in — 3 minutes, that's it. You've got this."
             ]
         case .squirrel:
             return [
-                "QUICK! 45 seconds of high knees, I'm already doing them!",
+                "QUICK! 45 seconds of high knees, let's go!",
                 "47 minutes of sitting. You know what that does. 5 minutes. Right now. GO.",
                 "4 minutes free? Let's burn it. Clock's ticking"
             ]
@@ -97,11 +115,11 @@ enum Coach: String, Codable, CaseIterable, Hashable {
         let timeWord = hour < 12 ? "morning" : hour < 17 ? "afternoon" : "evening"
         switch self {
         case .koala:
-            return "Good \(timeWord)… no judgment on when you started. I'm just glad you're here."
+            return "Good \(timeWord)… no judgment. I'm just glad you're here."
         case .panda:
-            return "Good \(timeWord). Today we move a little. Nothing crazy — ready when you are."
+            return "Good \(timeWord). Today we move a little. Ready when you are."
         case .squirrel:
-            return "Good \(timeWord). Here's today's plan. Takes 5 minutes. Let's move."
+            return "Good \(timeWord). Here's today's plan. Let's move."
         }
     }
 
