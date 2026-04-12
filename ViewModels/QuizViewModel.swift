@@ -10,12 +10,8 @@ import SwiftData
 
 @Observable
 class QuizViewModel {
-    // All 8 questions
     let questions = QuizQuestion.all
-
-    // Tracks which option the user selected per question index
-    var selectedOptions: [Int: Int] = [:]  // [questionIndex: optionIndex]
-
+    var selectedOptions: [Int: Int] = [:]
     var currentQuestionIndex: Int = 0
 
     var isComplete: Bool {
@@ -26,7 +22,6 @@ class QuizViewModel {
         Double(currentQuestionIndex + 1) / Double(questions.count)
     }
 
-    // Select an option and auto-advance
     func select(optionIndex: Int, for questionIndex: Int) {
         selectedOptions[questionIndex] = optionIndex
     }
@@ -43,7 +38,6 @@ class QuizViewModel {
         }
     }
 
-    // --- Core assignment logic ---
     func assignedCoach() -> Coach {
         let score = lazinessScore()
         switch score {
@@ -54,7 +48,6 @@ class QuizViewModel {
     }
 
     private func lazinessScore() -> Int {
-        // Only Q1–Q5 (indices 0–4) contribute to score
         var total = 0
         for i in 0..<5 {
             if let selected = selectedOptions[i] {
@@ -64,7 +57,6 @@ class QuizViewModel {
         return total
     }
 
-    // Personalisation data from Q6–Q8 (indices 5–7)
     func primaryStruggle() -> String {
         guard let idx = selectedOptions[5] else { return "" }
         return questions[5].options[idx].text
@@ -85,7 +77,6 @@ class QuizViewModel {
         }
     }
 
-    // Build and save the User after quiz completes
     func createUser(context: ModelContext) -> User {
         let user = User(
             assignedCoach: assignedCoach(),
@@ -95,6 +86,7 @@ class QuizViewModel {
             mainIntention: mainIntention(),
             dailyTimeCommitment: dailyTimeCommitment()
         )
+        // This is the critical flag RootView checks
         user.hasCompletedOnboarding = true
         context.insert(user)
         try? context.save()
@@ -102,8 +94,7 @@ class QuizViewModel {
     }
 
     private func dailySessionGoal() -> Int {
-        let minutes = dailyTimeCommitment()
-        switch minutes {
+        switch dailyTimeCommitment() {
         case 2:  return 1
         case 5:  return 3
         case 10: return 5

@@ -16,17 +16,31 @@ struct RootView: View {
         Group {
             switch appState.appPhase {
             case .loading:
+                // once SwiftData has populated `users`
                 SplashView()
-                    .onAppear {
-                        appState.currentUser = users.first
-                        appState.determinePhase()
-                    }
+
             case .onboarding:
                 QuizView()
+
             case .mainApp:
                 MainTabView()
             }
         }
-        .animation(.easeInOut, value: appState.appPhase)
+        .animation(.easeInOut(duration: 0.4), value: appState.appPhase)
+        // when SwiftData finishes its first load
+        .onChange(of: users) { _, newUsers in
+            if appState.appPhase == .loading {
+                appState.determinePhase(users: newUsers)
+            }
+        }
+
+        .onAppear {
+            // Small delay to let SwiftData settle
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+                if appState.appPhase == .loading {
+                    appState.determinePhase(users: users)
+                }
+            }
+        }
     }
 }

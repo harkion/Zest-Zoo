@@ -23,10 +23,16 @@ class AppState {
         case mainApp
     }
 
-    func determinePhase() {
-        if hasCompletedOnboarding && currentUser != nil {
+    func determinePhase(users: [User]) {
+        // Always check BOTH conditions using the live users array
+        // not a cached currentUser that might be stale
+        if let user = users.first, user.hasCompletedOnboarding {
+            currentUser = user
             appPhase = .mainApp
         } else {
+            // Clear any stale data
+            currentUser = nil
+            hasCompletedOnboarding = false
             appPhase = .onboarding
         }
     }

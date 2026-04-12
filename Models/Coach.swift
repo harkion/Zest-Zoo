@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-enum Coach: String, Codable, CaseIterable {
+enum Coach: String, Codable, CaseIterable, Hashable {
     case koala
     case panda
     case squirrel
@@ -28,6 +28,8 @@ enum Coach: String, Codable, CaseIterable {
         }
     }
 
+    // Use string literals instead of emoji literals
+    // to avoid SwiftData encoding issues
     var emoji: String {
         switch self {
         case .koala:    return "🐨"
@@ -36,12 +38,11 @@ enum Coach: String, Codable, CaseIterable {
         }
     }
 
-    // The accent color for each coach — matches your Figma exactly
     var primaryColor: Color {
         switch self {
-        case .koala:    return Color(hex: "#8DA9C4") // muted blue-grey
-        case .panda:    return Color(hex: "#4CAF50") // green
-        case .squirrel: return Color(hex: "#FF9500") // orange
+        case .koala:    return Color(hex: "#8DA9C4")
+        case .panda:    return Color(hex: "#4CAF50")
+        case .squirrel: return Color(hex: "#FF9500")
         }
     }
 
@@ -53,7 +54,6 @@ enum Coach: String, Codable, CaseIterable {
         }
     }
 
-    // Currency name per coach
     var currencyName: String {
         switch self {
         case .koala:    return "Leafs"
@@ -70,7 +70,6 @@ enum Coach: String, Codable, CaseIterable {
         }
     }
 
-    // Nudge messages shown in push notifications
     var nudgeMessages: [String] {
         switch self {
         case .koala:
@@ -87,19 +86,18 @@ enum Coach: String, Codable, CaseIterable {
             ]
         case .squirrel:
             return [
-                "QUICK! 45 seconds of high knees, I'm already doing them! 🐿️",
+                "QUICK! 45 seconds of high knees, I'm already doing them!",
                 "47 minutes of sitting. You know what that does. 5 minutes. Right now. GO.",
-                "4 minutes free? Let's burn it. Clock's ticking ⚡"
+                "4 minutes free? Let's burn it. Clock's ticking"
             ]
         }
     }
 
-    // Greeting based on time of day
     func greeting(for hour: Int) -> String {
         let timeWord = hour < 12 ? "morning" : hour < 17 ? "afternoon" : "evening"
         switch self {
         case .koala:
-            return "Good \(timeWord)… or whatever time it is. No judgment. I'm just glad you're here."
+            return "Good \(timeWord)… no judgment on when you started. I'm just glad you're here."
         case .panda:
             return "Good \(timeWord). Today we move a little. Nothing crazy — ready when you are."
         case .squirrel:
@@ -107,7 +105,6 @@ enum Coach: String, Codable, CaseIterable {
         }
     }
 
-    // Coach tagline shown on home card
     var tagline: String {
         switch self {
         case .koala:    return "Ready for your next micro-movement?"

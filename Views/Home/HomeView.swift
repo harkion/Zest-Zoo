@@ -90,7 +90,7 @@ struct HomeView: View {
         HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(vm.greetingText)
-                    .font(.system(size: 28, weight: .black, design: .rounded))
+                    .font(.system(size: 28, weight: .semibold, design: .rounded))
                     .foregroundColor(.black)
                 Text(vm.dateText)
                     .font(.system(size: 14, weight: .medium, design: .rounded))
@@ -181,7 +181,7 @@ struct HomeView: View {
 
             VStack(spacing: 6) {
                 Text(vm.user.assignedCoach.displayName)
-                    .font(.system(size: 20, weight: .black, design: .rounded))
+                    .font(.system(size: 20, weight: .bold, design: .rounded))
                     .foregroundColor(.black)
                 Text(vm.user.assignedCoach.tagline)
                     .font(.system(size: 14, weight: .regular, design: .rounded))
@@ -212,9 +212,9 @@ struct HomeView: View {
             } label: {
                 HStack(spacing: 8) {
                     Image(systemName: "bolt.fill")
-                        .font(.system(size: 16, weight: .bold))
+                        .font(.system(size: 16, weight: .semibold))
                     Text("Start Movement")
-                        .font(.system(size: 17, weight: .bold, design: .rounded))
+                        .font(.system(size: 17, weight: .regular, design: .rounded))
                 }
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity)
@@ -237,12 +237,12 @@ struct HomeView: View {
             HStack {
                 Image(systemName: "calendar")
                     .foregroundColor(.blue)
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.system(size: 16, weight: .medium))
                 Text("Weekly Progress")
-                    .font(.system(size: 16, weight: .bold, design: .rounded))
+                    .font(.system(size: 16, weight: .semibold, design: .rounded))
                 Spacer()
                 Text("\(Int(vm.weeklyProgressPercent * 100))%")
-                    .font(.system(size: 16, weight: .bold, design: .rounded))
+                    .font(.system(size: 16, weight: .semibold, design: .rounded))
                     .foregroundColor(.green)
             }
 
@@ -319,7 +319,7 @@ struct StatCard: View {
                 .foregroundColor(iconColor)
             VStack(alignment: .leading, spacing: 2) {
                 Text(value)
-                    .font(.system(size: 22, weight: .black, design: .rounded))
+                    .font(.system(size: 22, weight: .bold, design: .rounded))
                     .foregroundColor(.black)
                 Text(label)
                     .font(.system(size: 12, weight: .medium, design: .rounded))

@@ -9,6 +9,6 @@
 import UserNotifications
 import CoreMotion
 
-// Two trigger types you'll need:
+// Two trigger types will come:
 // 1. Scheduled — user-set times (e.g., 10am, 2pm, 4pm)
 // 2. Inactivity-based — CMMotionActivityManager detects 45+ min sitting
