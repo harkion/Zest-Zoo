@@ -15,7 +15,6 @@ struct DailyRewardView: View {
     let weekRewards = [5, 10, 15, 20, 30, 40, 100]
 
     var currentDay: Int {
-        // In real app derive from streak; using 4 as demo
         min((appState.currentUser?.currentStreak ?? 1), 7)
     }
 
@@ -30,7 +29,8 @@ struct DailyRewardView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 0) {
-                // Top reward card
+
+                // MARK: - Top reward card
                 VStack(spacing: 12) {
                     ZStack {
                         Circle()
@@ -49,14 +49,21 @@ struct DailyRewardView: View {
                         .font(.system(size: 14, weight: .regular, design: .rounded))
                         .foregroundColor(.white.opacity(0.85))
 
+                    // Today's reward row
                     HStack {
                         Text("Today's reward")
                             .font(.system(size: 15, weight: .medium, design: .rounded))
                             .foregroundColor(.white.opacity(0.9))
                         Spacer()
-                        Text("\(todayReward) \(coach.currencyEmoji)")
-                            .font(.system(size: 20, weight: .black, design: .rounded))
-                            .foregroundColor(.white)
+                        HStack(spacing: 6) {
+                            Image(coach.currencyImageName)
+                                .resizable()
+                                .scaledToFit()
+                                .frame(width: 22, height: 22)
+                            Text("\(todayReward)")
+                                .font(.system(size: 20, weight: .black, design: .rounded))
+                                .foregroundColor(.white)
+                        }
                     }
                     .padding(.horizontal, 16)
                     .padding(.vertical, 12)
@@ -72,21 +79,24 @@ struct DailyRewardView: View {
                     )
                 )
                 .clipShape(RoundedRectangle(cornerRadius: 24))
-                .padding(20)
+                .padding(.horizontal, 20)
+                .padding(.top, 8)
+                .padding(.bottom, 24)
 
-                // This week strip
+                // MARK: - This Week label
                 Text("This Week")
                     .font(.system(size: 18, weight: .bold, design: .rounded))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 20)
                     .padding(.bottom, 12)
 
-                HStack(spacing: 8) {
+                // MARK: - Day cells strip
+                HStack(spacing: 6) {
                     ForEach(0..<7, id: \.self) { i in
                         DayRewardCell(
                             day: i + 1,
                             reward: weekRewards[i],
-                            emoji: coach.currencyEmoji,
+                            coach: coach,
                             state: dayState(for: i + 1),
                             isSpecial: i == 6
                         )
@@ -94,7 +104,7 @@ struct DailyRewardView: View {
                 }
                 .padding(.horizontal, 16)
 
-                // Info cards
+                // MARK: - Info cards
                 VStack(spacing: 12) {
                     RewardInfoCard(
                         icon: "sparkles",
@@ -112,27 +122,66 @@ struct DailyRewardView: View {
                 .padding(.horizontal, 20)
                 .padding(.top, 24)
 
-                // Claim button
+                // MARK: - Claim button
                 Button {
                     guard !claimed else { return }
-                    claimed = true
-                    showCelebration = true
+                    withAnimation(.spring(duration: 0.4)) {
+                        claimed = true
+                        showCelebration = true
+                    }
                     if let user = appState.currentUser {
                         user.currencyBalance += todayReward
                     }
                 } label: {
-                    Text(claimed ? "Claimed! ✓" : "Claim Today's Reward")
-                        .font(.system(size: 18, weight: .bold, design: .rounded))
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .frame(height: 56)
-                        .background(claimed ? Color.gray : Color(hex: "#FFB300"))
-                        .clipShape(RoundedRectangle(cornerRadius: 16))
+                    HStack(spacing: 10) {
+                        if claimed {
+                            Image(systemName: "checkmark.circle.fill")
+                                .font(.system(size: 20, weight: .semibold))
+                                .foregroundColor(.white)
+                            Text("Claimed!")
+                                .font(.system(size: 18, weight: .bold, design: .rounded))
+                                .foregroundColor(.white)
+                        } else {
+                            Image(systemName: "gift.fill")
+                                .font(.system(size: 20, weight: .semibold))
+                                .foregroundColor(.white)
+                            Text("Claim Today's Reward")
+                                .font(.system(size: 18, weight: .bold, design: .rounded))
+                                .foregroundColor(.white)
+                        }
+                    }
+                    .frame(maxWidth: .infinity)
+                    .frame(height: 56)
+                    .background(claimed ? Color.gray : Color(hex: "#FFB300"))
+                    .clipShape(RoundedRectangle(cornerRadius: 16))
                 }
                 .padding(.horizontal, 20)
                 .padding(.top, 24)
-                .padding(.bottom, 40)
+                .padding(.bottom, 16)
                 .disabled(claimed)
+                .animation(.easeInOut(duration: 0.3), value: claimed)
+
+                // MARK: - Celebration message
+                if showCelebration {
+                    VStack(spacing: 8) {
+                        Image(coach.imageName)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 60, height: 60)
+
+                        Text(celebrationMessage)
+                            .font(.system(size: 15, weight: .semibold, design: .rounded))
+                            .foregroundColor(coach.primaryColor)
+                            .multilineTextAlignment(.center)
+                    }
+                    .padding(20)
+                    .background(coach.secondaryColor)
+                    .clipShape(RoundedRectangle(cornerRadius: 20))
+                    .padding(.horizontal, 20)
+                    .transition(.scale.combined(with: .opacity))
+                }
+
+                Spacer().frame(height: 40)
             }
         }
         .background(Color(hex: "#F5F5F7"))
@@ -140,63 +189,103 @@ struct DailyRewardView: View {
         .navigationBarTitleDisplayMode(.large)
     }
 
+    // MARK: - Helpers
     func dayState(for day: Int) -> DayRewardCell.DayState {
-        if day < currentDay { return .completed }
+        if day < currentDay  { return .completed }
         if day == currentDay { return .today }
         return .upcoming
     }
-}
 
-struct DayRewardCell: View {
-    let day: Int
-    let reward: Int
-    let emoji: String
-    let state: DayState
-    let isSpecial: Bool
-
-    enum DayState { case completed, today, upcoming }
-
-    var body: some View {
-        VStack(spacing: 6) {
-            Text("Day\n\(day)")
-                .font(.system(size: 10, weight: .bold, design: .rounded))
-                .multilineTextAlignment(.center)
-                .foregroundColor(state == .completed ? .white : state == .today ? .black : .gray)
-
-            if isSpecial && state == .upcoming {
-                Image(systemName: "gift.fill")
-                    .font(.system(size: 16))
-                    .foregroundColor(.orange)
-            } else {
-                Text(emoji)
-                    .font(.system(size: 16))
-            }
-
-            Text("\(reward)")
-                .font(.system(size: 11, weight: .black, design: .rounded))
-                .foregroundColor(state == .completed ? .white : state == .today ? .black : .gray)
+    var celebrationMessage: String {
+        switch coach {
+        case .koala:
+            return "You showed up. That's everything. \(todayReward) leafs earned… now rest."
+        case .panda:
+            return "Bamboo collected! \(todayReward) bamboo shoots added. Keep the streak alive, bro."
+        case .squirrel:
+            return "\(todayReward) acorns SECURED! Come back tomorrow. Don't. Stop. Now. GO."
         }
-        .frame(maxWidth: .infinity)
-        .padding(.vertical, 10)
-        .background(
-            Group {
-                if state == .completed {
-                    Color.green
-                } else if state == .today {
-                    Color.white
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12)
-                                .stroke(Color.blue, lineWidth: 2)
-                        )
-                } else {
-                    Color.white.opacity(0.6)
-                }
-            }
-        )
-        .clipShape(RoundedRectangle(cornerRadius: 12))
     }
 }
 
+// MARK: - Day Reward Cell
+struct DayRewardCell: View {
+    let day: Int
+    let reward: Int
+    let coach: Coach
+    let state: DayState
+    let isSpecial: Bool
+
+    enum DayState {
+        case completed
+        case today
+        case upcoming
+    }
+
+    var body: some View {
+        VStack(spacing: 6) {
+            // Day label
+            Text("Day\n\(day)")
+                .font(.system(size: 9, weight: .bold, design: .rounded))
+                .multilineTextAlignment(.center)
+                .foregroundColor(labelColor)
+                .lineLimit(2)
+
+            // Icon
+            if isSpecial && state == .upcoming {
+                Image(systemName: "gift.fill")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.orange)
+            } else if state == .completed {
+                Image(systemName: "checkmark.circle.fill")
+                    .font(.system(size: 14, weight: .semibold))
+                    .foregroundColor(.white)
+            } else {
+                Image(coach.currencyImageName)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 18, height: 18)
+            }
+
+            // Reward amount
+            Text("\(reward)")
+                .font(.system(size: 10, weight: .black, design: .rounded))
+                .foregroundColor(labelColor)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 10)
+        .background(backgroundView)
+        .clipShape(RoundedRectangle(cornerRadius: 12))
+    }
+
+    private var labelColor: Color {
+        switch state {
+        case .completed: return .white
+        case .today:     return .black
+        case .upcoming:  return .gray
+        }
+    }
+
+    @ViewBuilder
+    private var backgroundView: some View {
+        switch state {
+        case .completed:
+            Color.green
+
+        case .today:
+            Color.white
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(Color.blue, lineWidth: 2)
+                )
+
+        case .upcoming:
+            Color.white.opacity(0.6)
+        }
+    }
+}
+
+// MARK: - Reward Info Card
 struct RewardInfoCard: View {
     let icon: String
     let iconColor: Color
@@ -205,8 +294,15 @@ struct RewardInfoCard: View {
 
     var body: some View {
         HStack(spacing: 14) {
-            Text(icon == "sparkles" ? "✨" : "⏰")
-                .font(.system(size: 28))
+            ZStack {
+                Circle()
+                    .fill(iconColor.opacity(0.15))
+                    .frame(width: 44, height: 44)
+                Image(systemName: icon)
+                    .font(.system(size: 20, weight: .semibold))
+                    .foregroundColor(iconColor)
+            }
+
             VStack(alignment: .leading, spacing: 3) {
                 Text(title)
                     .font(.system(size: 15, weight: .bold, design: .rounded))
@@ -214,6 +310,7 @@ struct RewardInfoCard: View {
                 Text(subtitle)
                     .font(.system(size: 13, weight: .regular, design: .rounded))
                     .foregroundColor(.gray)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             Spacer()
         }

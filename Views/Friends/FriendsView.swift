@@ -23,9 +23,21 @@ struct FriendsView: View {
     ]
 
     let recentActivity: [ActivityFeedItem] = [
-        ActivityFeedItem(name: "Marcus Lee", action: "completed a 5-minute burst 🎉", time: "12 min ago"),
-        ActivityFeedItem(name: "Sarah Johnson", action: "reached a 12-day streak 🔥", time: "1 hour ago"),
-        ActivityFeedItem(name: "Jake Wilson", action: "earned Level 14 ⭐️", time: "3 hours ago")
+        ActivityFeedItem(name: "Marcus Lee",
+                         action: "completed a 5-minute burst",
+                         time: "12 min ago",
+                         icon: "bolt.fill",
+                         iconColor: Color(hex: "#FF9500")),
+        ActivityFeedItem(name: "Sarah Johnson",
+                         action: "reached a 12-day streak",
+                         time: "1 hour ago",
+                         icon: "flame.fill",
+                         iconColor: .orange),
+        ActivityFeedItem(name: "Jake Wilson",
+                         action: "earned Level 14",
+                         time: "3 hours ago",
+                         icon: "star.fill",
+                         iconColor: .yellow)
     ]
 
     @State private var selectedTab = 0
@@ -123,9 +135,14 @@ struct FriendsView: View {
                         .foregroundColor(.white.opacity(0.8))
                 }
 
-                Text("Compete to see who can accumulate more movement minutes Monday to Sunday. Winner gets bragging rights! 🏆")
-                    .font(.system(size: 14, weight: .regular, design: .rounded))
-                    .foregroundColor(.white.opacity(0.9))
+                HStack(spacing: 6) {
+                    Text("Compete to see who can accumulate more movement minutes Monday to Sunday. Winner gets bragging rights!")
+                        .font(.system(size: 14, weight: .regular, design: .rounded))
+                        .foregroundColor(.white.opacity(0.9))
+                    Image(systemName: "trophy.fill")
+                        .font(.system(size: 14))
+                        .foregroundColor(.yellow)
+                }
 
                 ProgressView(value: 0.35)
                     .tint(.white)
@@ -167,6 +184,8 @@ struct ActivityFeedItem: Identifiable {
     let name: String
     let action: String
     let time: String
+    let icon: String
+    let iconColor: Color
 }
 
 // MARK: - Supporting Views
@@ -180,8 +199,10 @@ struct FriendRow: View {
                     .fill(friend.coach.primaryColor.opacity(0.2))
                     .frame(width: 48, height: 48)
                     .overlay(
-                        Text(friend.coach.emoji)
-                            .font(.system(size: 22))
+                        Image(friend.coach.imageName)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 26, height: 26)
                     )
                 if friend.isOnline {
                     Circle()
@@ -226,19 +247,25 @@ struct ActivityFeedRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Circle()
-                .fill(Color.orange.opacity(0.15))
-                .frame(width: 40, height: 40)
-                .overlay(
-                    Text("👤")
-                        .font(.system(size: 18))
-                )
+            ZStack {
+                Circle()
+                    .fill(item.iconColor.opacity(0.15))
+                    .frame(width: 44, height: 44)
+                Image(systemName: item.icon)
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundColor(item.iconColor)
+            }
 
             VStack(alignment: .leading, spacing: 3) {
-                Text("\(item.name) \(item.action)")
-                    .font(.system(size: 14, weight: .regular, design: .rounded))
-                    .foregroundColor(.black)
-                    .fixedSize(horizontal: false, vertical: true)
+                Group {
+                    Text(item.name)
+                        .fontWeight(.bold)
+                     Text(" \(item.action)")
+                }
+                .font(.system(size: 14, weight: .regular, design: .rounded))
+                .foregroundColor(.black)
+                .fixedSize(horizontal: false, vertical: true)
+
                 Text(item.time)
                     .font(.system(size: 12, weight: .regular, design: .rounded))
                     .foregroundColor(.gray)
@@ -274,10 +301,7 @@ struct LeaderboardRow: View {
                     .foregroundColor(rank <= 3 ? .white : .gray)
             }
 
-            Circle()
-                .fill(friend.coach.primaryColor.opacity(0.2))
-                .frame(width: 40, height: 40)
-                .overlay(Text(friend.coach.emoji).font(.system(size: 20)))
+            CoachAvatarView(coach: friend.coach, size: 40)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(friend.name)

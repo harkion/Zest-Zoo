@@ -73,8 +73,10 @@ struct CoachRevealView: View {
 
                     // Currency preview
                     HStack(spacing: 8) {
-                        Text(coach.currencyEmoji)
-                            .font(.system(size: 24))
+                        Image(coach.currencyImageName)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 28, height: 28)
                         Text("You'll earn \(coach.currencyName)")
                             .font(.system(size: 15, weight: .semibold, design: .rounded))
                             .foregroundColor(coach.primaryColor)
@@ -92,7 +94,7 @@ struct CoachRevealView: View {
                 // CTA button
                 if showButton {
                     Button(action: onContinue) {
-                        Text("Let's Go! \(coach.emoji)")
+                        Text("Let's Go!")
                             .font(.system(size: 18, weight: .bold, design: .rounded))
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)

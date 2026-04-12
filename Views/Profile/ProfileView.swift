@@ -18,34 +18,18 @@ struct ProfileView: View {
                 // Profile header
                 VStack(spacing: 16) {
                     ZStack {
-                        Circle()
-                            .fill(user?.assignedCoach.primaryColor ?? .gray)
-                            .frame(width: 90, height: 90)
-                        Text(user?.assignedCoach.emoji ?? "🐨")
-                            .font(.system(size: 50))
+                        CoachAvatarView(coach: user?.assignedCoach ?? .koala, size: 90)
                     }
 
                     VStack(spacing: 4) {
-                        Text(user?.name.isEmpty == false ? user!.name : "Zest Zoo User")
+                        Text(user?.name.isEmpty == false ? user!.name : " Zoo User")
                             .font(.system(size: 22, weight: .black, design: .rounded))
                             .foregroundColor(.black)
                         Text("Member since \(joinDateText)")
                             .font(.system(size: 13, weight: .regular, design: .rounded))
                             .foregroundColor(.gray)
                     }
-
-                    // Coach badge
-                    HStack(spacing: 8) {
-                        Text(user?.assignedCoach.emoji ?? "🐨")
-                            .font(.system(size: 16))
-                        Text(user?.assignedCoach.displayName ?? "Coach Koala")
-                            .font(.system(size: 14, weight: .bold, design: .rounded))
-                            .foregroundColor(user?.assignedCoach.primaryColor ?? .gray)
-                    }
-                    .padding(.horizontal, 16)
-                    .padding(.vertical, 8)
-                    .background((user?.assignedCoach.primaryColor ?? .gray).opacity(0.12))
-                    .clipShape(Capsule())
+                        
                 }
                 .padding(.vertical, 24)
                 .frame(maxWidth: .infinity)
@@ -81,8 +65,10 @@ struct ProfileView: View {
 
                 // Currency balance
                 HStack(spacing: 12) {
-                    Text(user?.assignedCoach.currencyEmoji ?? "🍃")
-                        .font(.system(size: 28))
+                    Image(user?.assignedCoach.currencyImageName ?? "leaf_icon")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 36, height: 36)
                     VStack(alignment: .leading, spacing: 2) {
                         Text("\(user?.currencyBalance ?? 0) \(user?.assignedCoach.currencyName ?? "Leafs")")
                             .font(.system(size: 18, weight: .black, design: .rounded))
@@ -106,14 +92,30 @@ struct ProfileView: View {
                         .font(.system(size: 18, weight: .bold, design: .rounded))
 
                     HStack(spacing: 12) {
-                        AchievementBadge(icon: "👟", name: "First Steps",
-                                         earned: (user?.totalActivitiesCompleted ?? 0) >= 1)
-                        AchievementBadge(icon: "🔥", name: "Week Warrior",
-                                         earned: (user?.currentStreak ?? 0) >= 7)
-                        AchievementBadge(icon: "⚡️", name: "Speed Demon",
-                                         earned: (user?.totalActivitiesCompleted ?? 0) >= 10)
-                        AchievementBadge(icon: "🏆", name: "Century Club",
-                                         earned: (user?.totalMinutes ?? 0) >= 100)
+                        AchievementBadge(
+                            systemIcon: "shoe.fill",
+                            name: "First Steps",
+                            color: .blue,
+                            earned: (user?.totalActivitiesCompleted ?? 0) >= 1
+                        )
+                        AchievementBadge(
+                            systemIcon: "flame.fill",
+                            name: "Week Warrior",
+                            color: .orange,
+                            earned: (user?.currentStreak ?? 0) >= 7
+                        )
+                        AchievementBadge(
+                            systemIcon: "bolt.fill",
+                            name: "Speed Demon",
+                            color: .yellow,
+                            earned: (user?.totalActivitiesCompleted ?? 0) >= 10
+                        )
+                        AchievementBadge(
+                            systemIcon: "trophy.fill",
+                            name: "Century Club",
+                            color: .purple,
+                            earned: (user?.totalMinutes ?? 0) >= 100
+                        )
                     }
                 }
                 .padding(.horizontal, 20)
@@ -161,20 +163,23 @@ struct ProfileStatCell: View {
 }
 
 struct AchievementBadge: View {
-    let icon: String
+    let systemIcon: String
     let name: String
+    let color: Color
     let earned: Bool
 
     var body: some View {
         VStack(spacing: 6) {
             ZStack {
                 Circle()
-                    .fill(earned ? Color.yellow.opacity(0.2) : Color.gray.opacity(0.1))
+                    .fill(earned
+                          ? color.opacity(0.15)
+                          : Color.gray.opacity(0.1))
                     .frame(width: 52, height: 52)
-                Text(earned ? icon : "🔒")
-                    .font(.system(size: 24))
-                    .grayscale(earned ? 0 : 1)
-                    .opacity(earned ? 1 : 0.4)
+
+                Image(systemName: earned ? systemIcon : "lock.fill")
+                    .font(.system(size: 22, weight: .semibold))
+                    .foregroundColor(earned ? color : .gray.opacity(0.4))
             }
             Text(name)
                 .font(.system(size: 10, weight: .semibold, design: .rounded))

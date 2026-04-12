@@ -43,8 +43,10 @@ struct ShopView: View {
 
                 // Balance card
                 HStack(spacing: 12) {
-                    Text(coach.currencyEmoji)
-                        .font(.system(size: 32))
+                    Image(coach.currencyImageName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 40, height: 40)
                     VStack(alignment: .leading, spacing: 2) {
                         Text("\(balance)")
                             .font(.system(size: 28, weight: .black, design: .rounded))
@@ -96,7 +98,7 @@ struct ShopView: View {
                     .padding(.bottom, 24)
                 }
 
-                Text("More items coming soon! 🔜")
+                Text("More items coming soon!")
                     .font(.system(size: 14, weight: .medium, design: .rounded))
                     .foregroundColor(.gray)
                     .padding(.bottom, 40)
@@ -153,8 +155,10 @@ struct ShopItemCard: View {
                 }
             } label: {
                 HStack(spacing: 4) {
-                    Text(coach.currencyEmoji)
-                        .font(.system(size: 13))
+                    Image(coach.currencyImageName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
                     Text(purchased ? "Owned" : "\(item.cost)")
                         .font(.system(size: 13, weight: .bold, design: .rounded))
                         .foregroundColor(purchased ? .gray : canAfford ? .white : .gray)

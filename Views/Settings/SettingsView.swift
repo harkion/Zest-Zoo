@@ -32,8 +32,10 @@ struct SettingsView: View {
                         RoundedRectangle(cornerRadius: 12)
                             .fill(coach.primaryColor)
                             .frame(width: 52, height: 52)
-                        Text("🦁")
-                            .font(.system(size: 28))
+                        Image(coach.imageName)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 36, height: 36)
                     }
                     VStack(alignment: .leading, spacing: 2) {
                         Text("Zest Zoo")
@@ -139,10 +141,15 @@ struct SettingsView: View {
                 }
                 .padding(.horizontal, 20)
 
-                Text("Made with ❤️ for a healthier, happier you.")
-                    .font(.system(size: 13, weight: .regular, design: .rounded))
-                    .foregroundColor(.gray)
-                    .padding(.bottom, 40)
+                HStack(spacing: 4) {
+                    Text("Made with")
+                    Image(systemName: "heart.fill")
+                        .foregroundColor(.red)
+                    Text("for a healthier, happier you.")
+                }
+                .font(.system(size: 13, weight: .regular, design: .rounded))
+                .foregroundColor(.gray)
+                .padding(.bottom, 40)
             }
         }
         .background(Color(hex: "#F5F5F7"))
