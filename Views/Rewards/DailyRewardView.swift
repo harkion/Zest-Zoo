@@ -15,11 +15,13 @@ struct DailyRewardView: View {
     let weekRewards = [5, 10, 15, 20, 30, 40, 100]
 
     var currentDay: Int {
-        min((appState.currentUser?.currentStreak ?? 1), 7)
+        let streak = appState.currentUser?.currentStreak ?? 0
+        return max(1, min(streak + 1, 7))
     }
 
     var todayReward: Int {
-        weekRewards[min(currentDay - 1, 6)]
+        let index = max(0, min(currentDay - 1, weekRewards.count - 1))
+        return weekRewards[index]
     }
 
     var coach: Coach {
@@ -31,6 +33,7 @@ struct DailyRewardView: View {
             VStack(spacing: 0) {
 
                 // MARK: - Top reward card
+                
                 VStack(spacing: 12) {
                     ZStack {
                         Circle()
@@ -49,7 +52,6 @@ struct DailyRewardView: View {
                         .font(.system(size: 14, weight: .regular, design: .rounded))
                         .foregroundColor(.white.opacity(0.85))
 
-                    // Today's reward row
                     HStack {
                         Text("Today's reward")
                             .font(.system(size: 15, weight: .medium, design: .rounded))
@@ -84,13 +86,15 @@ struct DailyRewardView: View {
                 .padding(.bottom, 24)
 
                 // MARK: - This Week label
+                
                 Text("This Week")
                     .font(.system(size: 18, weight: .bold, design: .rounded))
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .padding(.horizontal, 20)
                     .padding(.bottom, 12)
 
-                // MARK: - Day cells strip
+                // MARK: - Day cells
+                
                 HStack(spacing: 6) {
                     ForEach(0..<7, id: \.self) { i in
                         DayRewardCell(
@@ -105,6 +109,7 @@ struct DailyRewardView: View {
                 .padding(.horizontal, 16)
 
                 // MARK: - Info cards
+                
                 VStack(spacing: 12) {
                     RewardInfoCard(
                         icon: "sparkles",
@@ -123,6 +128,7 @@ struct DailyRewardView: View {
                 .padding(.top, 24)
 
                 // MARK: - Claim button
+                
                 Button {
                     guard !claimed else { return }
                     withAnimation(.spring(duration: 0.4)) {
@@ -134,21 +140,12 @@ struct DailyRewardView: View {
                     }
                 } label: {
                     HStack(spacing: 10) {
-                        if claimed {
-                            Image(systemName: "checkmark.circle.fill")
-                                .font(.system(size: 20, weight: .semibold))
-                                .foregroundColor(.white)
-                            Text("Claimed!")
-                                .font(.system(size: 18, weight: .bold, design: .rounded))
-                                .foregroundColor(.white)
-                        } else {
-                            Image(systemName: "gift.fill")
-                                .font(.system(size: 20, weight: .semibold))
-                                .foregroundColor(.white)
-                            Text("Claim Today's Reward")
-                                .font(.system(size: 18, weight: .bold, design: .rounded))
-                                .foregroundColor(.white)
-                        }
+                        Image(systemName: claimed ? "checkmark.circle.fill" : "gift.fill")
+                            .font(.system(size: 20, weight: .semibold))
+                            .foregroundColor(.white)
+                        Text(claimed ? "Claimed!" : "Claim Today's Reward")
+                            .font(.system(size: 18, weight: .bold, design: .rounded))
+                            .foregroundColor(.white)
                     }
                     .frame(maxWidth: .infinity)
                     .frame(height: 56)
@@ -161,7 +158,8 @@ struct DailyRewardView: View {
                 .disabled(claimed)
                 .animation(.easeInOut(duration: 0.3), value: claimed)
 
-                // MARK: - Celebration message
+                // MARK: - Celebration
+                
                 if showCelebration {
                     VStack(spacing: 8) {
                         Image(coach.imageName)
@@ -190,9 +188,11 @@ struct DailyRewardView: View {
     }
 
     // MARK: - Helpers
+
     func dayState(for day: Int) -> DayRewardCell.DayState {
-        if day < currentDay  { return .completed }
-        if day == currentDay { return .today }
+        let streak = appState.currentUser?.currentStreak ?? 0
+        if day < currentDay && streak > 0 { return .completed }
+        if day == currentDay               { return .today }
         return .upcoming
     }
 
@@ -201,14 +201,15 @@ struct DailyRewardView: View {
         case .koala:
             return "You showed up. That's everything. \(todayReward) leafs earned… now rest."
         case .panda:
-            return "Bamboo collected! \(todayReward) bamboo shoots added. Keep the streak alive, bro."
+            return "Bamboo collected! \(todayReward) bamboo shoots added. Keep the streak alive!"
         case .squirrel:
-            return "\(todayReward) acorns SECURED! Come back tomorrow. Don't. Stop. Now. GO."
+            return "\(todayReward) acorns SECURED! Come back tomorrow. Don't stop now!"
         }
     }
 }
 
 // MARK: - Day Reward Cell
+
 struct DayRewardCell: View {
     let day: Int
     let reward: Int
@@ -224,14 +225,12 @@ struct DayRewardCell: View {
 
     var body: some View {
         VStack(spacing: 6) {
-            // Day label
             Text("Day\n\(day)")
                 .font(.system(size: 9, weight: .bold, design: .rounded))
                 .multilineTextAlignment(.center)
                 .foregroundColor(labelColor)
                 .lineLimit(2)
 
-            // Icon
             if isSpecial && state == .upcoming {
                 Image(systemName: "gift.fill")
                     .font(.system(size: 14, weight: .semibold))
@@ -247,7 +246,6 @@ struct DayRewardCell: View {
                     .frame(width: 18, height: 18)
             }
 
-            // Reward amount
             Text("\(reward)")
                 .font(.system(size: 10, weight: .black, design: .rounded))
                 .foregroundColor(labelColor)
@@ -271,14 +269,12 @@ struct DayRewardCell: View {
         switch state {
         case .completed:
             Color.green
-
         case .today:
             Color.white
                 .overlay(
                     RoundedRectangle(cornerRadius: 12)
                         .stroke(Color.blue, lineWidth: 2)
                 )
-
         case .upcoming:
             Color.white.opacity(0.6)
         }
@@ -286,6 +282,7 @@ struct DayRewardCell: View {
 }
 
 // MARK: - Reward Info Card
+
 struct RewardInfoCard: View {
     let icon: String
     let iconColor: Color

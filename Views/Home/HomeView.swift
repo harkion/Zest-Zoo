@@ -322,8 +322,7 @@ struct HomeView: View {
                 icon: "trophy.fill",
                 iconColor: .purple,
                 label: "Achievements",
-                destination: AnyView(Text("Achievements Coming Soon")
-                    .font(.title))
+                destination: AnyView(AchievementsView())
             )
         }
     }
