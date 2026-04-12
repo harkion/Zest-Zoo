@@ -93,7 +93,10 @@ struct FriendsView: View {
             // Friends cards
             VStack(spacing: 1) {
                 ForEach(friends) { friend in
-                    FriendRow(friend: friend)
+                    NavigationLink(destination: ChallengeView(friend: friend)) {
+                        FriendRow(friend: friend)
+                    }
+                    .buttonStyle(.plain)
                 }
             }
             .background(Color.white)
