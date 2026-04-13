@@ -21,7 +21,7 @@ struct ProfileView: View {
                     CoachAvatarView(coach: user?.assignedCoach ?? .koala, size: 90)
 
                     VStack(spacing: 4) {
-                        Text(user?.name.isEmpty == false ? user!.name : "Zoo User")
+                        Text(user?.name.isEmpty == false ? user!.name : "Test User")
                             .font(.system(size: 22, weight: .black, design: .rounded))
                             .foregroundColor(.black)
                         Text("Member since \(joinDateText)")

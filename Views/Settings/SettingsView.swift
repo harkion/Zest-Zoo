@@ -53,6 +53,21 @@ struct SettingsView: View {
                 .padding(.horizontal, 20)
                 .padding(.top, 8)
 
+                // MARK: - Notification Settings
+                
+                SettingsSection(title: "Notification Settings") {
+                    NavigationLink(destination: NotificationsView()) {
+                        SettingsLinkRow(
+                            icon: "bell.fill",
+                            iconColor: coach.primaryColor,
+                            title: "Notification Settings"
+                        )
+                    }
+                    .buttonStyle(.plain)
+                }
+                .padding(.horizontal, 20)
+                
+                
                 // MARK: - Notifications
                 SettingsSection(title: "Notifications") {
                     SettingsToggleRow(
