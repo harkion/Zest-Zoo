@@ -1,0 +1,23 @@
+{
+  "images" : [
+    {
+      "filename" : "koala_gentle_side_stretch.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "koala_gentle_side_stretch 1.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "koala_gentle_side_stretch 2.png",
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

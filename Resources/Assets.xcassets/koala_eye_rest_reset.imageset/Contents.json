@@ -1,0 +1,23 @@
+{
+  "images" : [
+    {
+      "filename" : "koala_eye_rest_reset.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "filename" : "koala_eye_rest_reset 1.png",
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "filename" : "koala_eye_rest_reset 2.png",
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
