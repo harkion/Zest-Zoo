@@ -65,10 +65,12 @@ struct SplashView: View {
                 .padding(.bottom, 36)
 
                 // App name
-                Text("Zest Zoo")
-                    .font(.system(size: 42, weight: .black, design: .rounded))
-                    .foregroundColor(.black)
-
+                Image("zest_zoo_logo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 240, height: 240)
+                    .clipShape(RoundedRectangle(cornerRadius: 24))
+                
                 // Tagline fades in after
                 Text("Movement Made Fun")
                     .font(.system(size: 18, weight: .medium, design: .rounded))

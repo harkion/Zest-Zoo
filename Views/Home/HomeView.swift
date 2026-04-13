@@ -12,7 +12,6 @@ struct HomeView: View {
     @Environment(AppState.self) private var appState
     @Environment(\.modelContext) private var context
     @State private var viewModel: HomeViewModel?
-    @State private var showActivity = false
     @State private var selectedActivity: Activity?
     @State private var showCompletion = false
     @State private var showCoachTransition = false
@@ -33,9 +32,12 @@ struct HomeView: View {
                         coachCard(vm)
                             .padding(.horizontal, 20)
                             .padding(.top, 20)
-                        weeklyProgressCard(vm)
-                            .padding(.horizontal, 20)
-                            .padding(.top, 16)
+                        NavigationLink(destination: WeeklyProgressView()) {
+                            weeklyProgressCard(vm)
+                        }
+                        .buttonStyle(.plain)
+                        .padding(.horizontal, 20)
+                        .padding(.top, 16)
                         quickActionsRow(vm)
                             .padding(.horizontal, 20)
                             .padding(.top, 16)
@@ -43,21 +45,22 @@ struct HomeView: View {
                     }
                 }
                 .background(Color(hex: "#F5F5F7"))
-                .sheet(isPresented: $showActivity) {
-                    if let activity = selectedActivity {
-                        ActivityView(
-                            activity: activity,
-                            coach: vm.user.assignedCoach
-                        ) {
-                            lastCompletedActivity = activity
-                            vm.completeSession(activity: activity, context: context)
-                            showActivity = false
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                                showCompletion = true
-                            }
+
+               
+                .sheet(item: $selectedActivity) { activity in
+                    ActivityView(
+                        activity: activity,
+                        coach: vm.user.assignedCoach
+                    ) {
+                        lastCompletedActivity = activity
+                        selectedActivity = nil
+                        vm.completeSession(activity: activity, context: context)
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            showCompletion = true
                         }
                     }
                 }
+
                 .fullScreenCover(isPresented: $showCompletion) {
                     if let activity = lastCompletedActivity {
                         CompletionView(
@@ -66,20 +69,24 @@ struct HomeView: View {
                             currencyEarned: 15
                         ) {
                             showCompletion = false
-                            
                             if vm.pendingTransition != nil {
-                                    showCoachTransition = true
-                                }
+                                showCoachTransition = true
+                            }
                         }
                     }
                 }
-            } else {
-                ProgressView()
-                    .onAppear {
-                        if let user = appState.currentUser {
-                            viewModel = HomeViewModel(user: user)
+
+                .fullScreenCover(isPresented: $showCoachTransition) {
+                    if let transition = viewModel?.pendingTransition {
+                        CoachTransitionView(transition: transition) {
+                            showCoachTransition = false
+                            viewModel?.applyPendingTransition(context: context)
                         }
                     }
+                }
+
+            } else {
+                ProgressView()
             }
         }
         .onAppear {
@@ -95,7 +102,7 @@ struct HomeView: View {
         HStack(alignment: .top) {
             VStack(alignment: .leading, spacing: 4) {
                 Text(vm.greetingText)
-                    .font(.system(size: 28, weight: .semibold, design: .rounded))
+                    .font(.system(size: 28, weight: .black, design: .rounded))
                     .foregroundColor(.black)
                 Text(vm.dateText)
                     .font(.system(size: 14, weight: .medium, design: .rounded))
@@ -103,7 +110,7 @@ struct HomeView: View {
             }
             Spacer()
             Button {
-                // notifications
+                // notifications — will wire later
             } label: {
                 ZStack(alignment: .topTrailing) {
                     Image(systemName: "bell")
@@ -114,10 +121,6 @@ struct HomeView: View {
                         .clipShape(Circle())
                         .shadow(color: .black.opacity(0.08), radius: 8, x: 0, y: 2)
 
-                    Circle()
-                        .fill(Color.red)
-                        .frame(width: 10, height: 10)
-                        .offset(x: 2, y: -2)
                 }
             }
         }
@@ -168,51 +171,22 @@ struct HomeView: View {
             )
         }
     }
-    
-    struct CurrencyStatCard: View {
-        let coach: Coach
-        let value: String
-
-        var body: some View {
-            HStack(spacing: 12) {
-                CurrencyIconView(coach: coach, size: 28)
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(value)
-                        .font(.system(size: 22, weight: .black, design: .rounded))
-                        .foregroundColor(.black)
-                    Text(coach.currencyName.lowercased())
-                        .font(.system(size: 12, weight: .medium, design: .rounded))
-                        .foregroundColor(.gray)
-                }
-                Spacer()
-            }
-            .padding(16)
-            .background(Color.white)
-            .clipShape(RoundedRectangle(cornerRadius: 16))
-            .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
-            .frame(maxWidth: .infinity)
-        }
-    }
 
     // MARK: - Coach Card
     @ViewBuilder
     private func coachCard(_ vm: HomeViewModel) -> some View {
         VStack(spacing: 16) {
-            // Avatar circle
-            ZStack {
-                CoachAvatarView(coach: vm.user.assignedCoach, size: 110)
-            }
+            CoachAvatarView(coach: vm.user.assignedCoach, size: 110)
 
             VStack(spacing: 6) {
                 Text(vm.user.assignedCoach.displayName)
-                    .font(.system(size: 20, weight: .bold, design: .rounded))
+                    .font(.system(size: 20, weight: .black, design: .rounded))
                     .foregroundColor(.black)
                 Text(vm.user.assignedCoach.tagline)
                     .font(.system(size: 14, weight: .regular, design: .rounded))
                     .foregroundColor(.gray)
             }
 
-            // Daily goal segments
             HStack(spacing: 6) {
                 ForEach(0..<vm.user.dailySessionGoal, id: \.self) { i in
                     RoundedRectangle(cornerRadius: 3)
@@ -220,7 +194,10 @@ struct HomeView: View {
                               ? vm.user.assignedCoach.primaryColor
                               : Color.gray.opacity(0.2))
                         .frame(height: 5)
-                        .animation(.spring(duration: 0.4), value: vm.user.dailySessionsCompleted)
+                        .animation(
+                            .spring(duration: 0.4),
+                            value: vm.user.dailySessionsCompleted
+                        )
                 }
             }
             .padding(.horizontal, 8)
@@ -229,16 +206,15 @@ struct HomeView: View {
                 .font(.system(size: 12, weight: .medium, design: .rounded))
                 .foregroundColor(.gray)
 
-            // Start Movement button
+
             Button {
                 selectedActivity = vm.todaysActivity
-                showActivity = true
             } label: {
                 HStack(spacing: 8) {
                     Image(systemName: "bolt.fill")
-                        .font(.system(size: 16, weight: .semibold))
+                        .font(.system(size: 16, weight: .bold))
                     Text("Start Movement")
-                        .font(.system(size: 17, weight: .regular, design: .rounded))
+                        .font(.system(size: 17, weight: .bold, design: .rounded))
                 }
                 .foregroundColor(.white)
                 .frame(maxWidth: .infinity)
@@ -250,8 +226,10 @@ struct HomeView: View {
         .padding(20)
         .background(vm.user.assignedCoach.secondaryColor)
         .clipShape(RoundedRectangle(cornerRadius: 24))
-        .shadow(color: vm.user.assignedCoach.primaryColor.opacity(0.15),
-                radius: 12, x: 0, y: 4)
+        .shadow(
+            color: vm.user.assignedCoach.primaryColor.opacity(0.15),
+            radius: 12, x: 0, y: 4
+        )
     }
 
     // MARK: - Weekly Progress
@@ -281,7 +259,10 @@ struct HomeView: View {
                             width: geo.size.width * vm.weeklyProgressPercent,
                             height: 10
                         )
-                        .animation(.spring(duration: 0.6), value: vm.weeklyProgressPercent)
+                        .animation(
+                            .spring(duration: 0.6),
+                            value: vm.weeklyProgressPercent
+                        )
                 }
             }
             .frame(height: 10)
@@ -296,7 +277,7 @@ struct HomeView: View {
                         .font(.system(size: 13, weight: .bold, design: .rounded))
                         .foregroundColor(.black)
                 } else {
-                    Text("Goal reached! 🎉")
+                    Text("Goal reached!")
                         .font(.system(size: 13, weight: .bold, design: .rounded))
                         .foregroundColor(.green)
                 }
@@ -328,7 +309,33 @@ struct HomeView: View {
     }
 }
 
-// MARK: - Stat Card Component
+// MARK: - Currency Stat Card
+struct CurrencyStatCard: View {
+    let coach: Coach
+    let value: String
+
+    var body: some View {
+        HStack(spacing: 12) {
+            CurrencyIconView(coach: coach, size: 28)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(value)
+                    .font(.system(size: 22, weight: .black, design: .rounded))
+                    .foregroundColor(.black)
+                Text(coach.currencyName.lowercased())
+                    .font(.system(size: 12, weight: .medium, design: .rounded))
+                    .foregroundColor(.gray)
+            }
+            Spacer()
+        }
+        .padding(16)
+        .background(Color.white)
+        .clipShape(RoundedRectangle(cornerRadius: 16))
+        .shadow(color: .black.opacity(0.05), radius: 8, x: 0, y: 2)
+        .frame(maxWidth: .infinity)
+    }
+}
+
+// MARK: - Stat Card
 struct StatCard: View {
     let icon: String
     let iconColor: Color
@@ -342,7 +349,7 @@ struct StatCard: View {
                 .foregroundColor(iconColor)
             VStack(alignment: .leading, spacing: 2) {
                 Text(value)
-                    .font(.system(size: 22, weight: .bold, design: .rounded))
+                    .font(.system(size: 22, weight: .black, design: .rounded))
                     .foregroundColor(.black)
                 Text(label)
                     .font(.system(size: 12, weight: .medium, design: .rounded))
@@ -358,7 +365,7 @@ struct StatCard: View {
     }
 }
 
-// MARK: - Quick Action Card Component
+// MARK: - Quick Action Card
 struct QuickActionCard: View {
     let icon: String
     let iconColor: Color
