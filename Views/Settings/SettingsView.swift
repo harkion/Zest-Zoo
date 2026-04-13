@@ -26,7 +26,7 @@ struct SettingsView: View {
         ScrollView {
             VStack(spacing: 20) {
 
-                // App version card
+                // MARK: - App version card
                 HStack(spacing: 14) {
                     ZStack {
                         RoundedRectangle(cornerRadius: 12)
@@ -51,9 +51,9 @@ struct SettingsView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 16))
                 .shadow(color: .black.opacity(0.04), radius: 6)
                 .padding(.horizontal, 20)
-                .padding(.top, 16)
+                .padding(.top, 8)
 
-                // Notifications section
+                // MARK: - Notifications
                 SettingsSection(title: "Notifications") {
                     SettingsToggleRow(
                         icon: "bell.fill",
@@ -89,7 +89,7 @@ struct SettingsView: View {
                 }
                 .padding(.horizontal, 20)
 
-                // About section
+                // MARK: - About
                 SettingsSection(title: "About") {
                     NavigationLink(destination: AboutView()) {
                         SettingsLinkRow(
@@ -127,8 +127,9 @@ struct SettingsView: View {
                         title: "Terms of Service"
                     )
                 }
-                
-                // Danger zone
+                .padding(.horizontal, 20)
+
+                // MARK: - Account / Danger zone
                 SettingsSection(title: "Account") {
                     Button {
                         showResetAlert = true
@@ -142,7 +143,7 @@ struct SettingsView: View {
                                     .font(.system(size: 14, weight: .semibold))
                                     .foregroundColor(.red)
                             }
-                            Text("Reset Progress")
+                            Text("Reset")
                                 .font(.system(size: 16, weight: .medium, design: .rounded))
                                 .foregroundColor(.red)
                             Spacer()
@@ -152,6 +153,7 @@ struct SettingsView: View {
                 }
                 .padding(.horizontal, 20)
 
+                // MARK: - Footer
                 HStack(spacing: 4) {
                     Text("Made with")
                     Image(systemName: "heart.fill")
@@ -166,29 +168,44 @@ struct SettingsView: View {
         .background(Color(hex: "#F5F5F7"))
         .navigationTitle("Settings")
         .navigationBarTitleDisplayMode(.large)
-        .alert("Reset Progress?", isPresented: $showResetAlert) {
+        .alert("Reset Everything?", isPresented: $showResetAlert) {
             Button("Cancel", role: .cancel) {}
-            Button("Reset", role: .destructive) {
+            Button("Reset & Restart", role: .destructive) {
                 resetProgress()
             }
         } message: {
-            Text("This will clear all your streaks, currency, and activity history. Your coach assignment will remain.")
+            Text("This will delete all your progress, streaks, currency, and coach assignment. You'll go back to the quiz to start fresh. This cannot be undone.")
         }
+        
     }
 
+    // MARK: - Reset — inside struct, after body
     private func resetProgress() {
-        guard let user = appState.currentUser else { return }
-        user.currentStreak = 0
-        user.totalMinutes = 0
-        user.weeklyMinutes = 0
-        user.currencyBalance = 0
-        user.totalActivitiesCompleted = 0
-        user.dailySessionsCompleted = 0
-        try? context.save()
+        // clear UserDefaults
+        UserDefaults.standard.removeObject(forKey: "hasCompletedOnboarding")
+
+        // delete all SwiftData records
+        do {
+            let activityDescriptor = FetchDescriptor<ActivityRecord>()
+            let activities = try context.fetch(activityDescriptor)
+            activities.forEach { context.delete($0) }
+
+            let userDescriptor = FetchDescriptor<User>()
+            let users = try context.fetch(userDescriptor)
+            users.forEach { context.delete($0) }
+
+            try context.save()
+        } catch {
+            print("Reset error: \(error)")
+        }
+
+        // send back to onboarding
+        appState.currentUser = nil
+        appState.appPhase = .onboarding
     }
 }
 
-// MARK: - Settings Components
+// MARK: - Settings Section
 struct SettingsSection<Content: View>: View {
     let title: String
     @ViewBuilder let content: Content
