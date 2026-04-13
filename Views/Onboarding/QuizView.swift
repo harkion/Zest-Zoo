@@ -58,11 +58,11 @@ struct QuizView: View {
                 GeometryReader { geo in
                     ZStack(alignment: .leading) {
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.gray.opacity(0.2))
+                            .fill(Color.green.opacity(0.2))
                             .frame(height: 6)
 
                         RoundedRectangle(cornerRadius: 4)
-                            .fill(Color.black)
+                            .fill(Color.green)
                             .frame(width: geo.size.width * viewModel.progress, height: 6)
                             .animation(.spring(duration: 0.4), value: viewModel.progress)
                     }
@@ -130,7 +130,7 @@ struct QuizView: View {
                             .foregroundColor(.white)
                             .frame(maxWidth: .infinity)
                             .frame(height: 56)
-                            .background(Color.black)
+                            .background(Color.green)
                             .clipShape(RoundedRectangle(cornerRadius: 16))
                     }
                     .padding(.horizontal, 24)
@@ -160,7 +160,7 @@ struct QuestionCardView: View {
             // Section label
             Text(question.section == .lazinessScore ? "Finding your coach" : "Getting to know you")
                 .font(.system(size: 13, weight: .semibold, design: .rounded))
-                .foregroundColor(.gray)
+                .foregroundColor(.black)
                 .textCase(.uppercase)
                 .tracking(1.2)
 
@@ -200,11 +200,11 @@ struct OptionRow: View {
             HStack(spacing: 16) {
                 ZStack {
                     Circle()
-                        .stroke(isSelected ? Color.black : Color.gray.opacity(0.3), lineWidth: 2)
+                        .stroke(isSelected ? Color.green : Color.gray.opacity(0.3), lineWidth: 2)
                         .frame(width: 24, height: 24)
                     if isSelected {
                         Circle()
-                            .fill(Color.black)
+                            .fill(Color.green)
                             .frame(width: 14, height: 14)
                     }
                 }
@@ -218,11 +218,11 @@ struct OptionRow: View {
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 14)
-            .background(isSelected ? Color.black.opacity(0.05) : Color(hex: "#F8F8F8"))
+            .background(isSelected ? Color.green.opacity(0.05) : Color(hex: "#F8F8F8"))
             .clipShape(RoundedRectangle(cornerRadius: 12))
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(isSelected ? Color.black.opacity(0.2) : Color.clear, lineWidth: 1.5)
+                    .stroke(isSelected ? Color.green.opacity(0.2) : Color.clear, lineWidth: 1.5)
             )
         }
         .animation(.spring(duration: 0.2), value: isSelected)
